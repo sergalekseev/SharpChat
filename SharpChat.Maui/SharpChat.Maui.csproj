@@ -78,7 +78,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\SharpChat\SharpChat.Core.csproj" />
+	  <ProjectReference Include="..\SharpChat.Core\SharpChat.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

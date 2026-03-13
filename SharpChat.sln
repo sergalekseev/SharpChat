@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Maui", "SharpChat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Wpf", "SharpChat.Wpf\SharpChat.Wpf.csproj", "{B208B781-9891-7FDB-44A2-8460204BCAA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Core", "SharpChat\SharpChat.Core.csproj", "{04A3EE03-C0D3-66E6-6C8C-F99309221321}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Core", "SharpChat.Core\SharpChat.Core.csproj", "{04A3EE03-C0D3-66E6-6C8C-F99309221321}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{089100B1-113F-4E66-888A-E83F3999EAFD}"
 	ProjectSection(SolutionItems) = preProject

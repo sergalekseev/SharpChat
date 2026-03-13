@@ -6,5 +6,5 @@
     <Deploy Solution="Debug|*" />
   </Project>
   <Project Path="SharpChat.Wpf/SharpChat.Wpf.csproj" />
-  <Project Path="SharpChat/SharpChat.Core.csproj" />
+  <Project Path="SharpChat.Core/SharpChat.Core.csproj" />
 </Solution>
