@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SharpChat.Maui.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:sf="clr-namespace:Syncfusion.Maui.Toolkit.SegmentedControl;assembly=Syncfusion.Maui.Toolkit"
+    xmlns:pages="clr-namespace:SharpChat.Maui.Pages"
+    xmlns:services="clr-namespace:SharpChat.Core.Services;assembly=SharpChat.Core"
+    xmlns:utils="clr-namespace:SharpChat.Maui.Utilities"
+    Shell.FlyoutBehavior="Disabled"
+    Title="SharpChat">
+
+    <ShellContent
+        ContentTemplate="{DataTemplate pages:LoginPage}"
+        Route="{utils:Route Value={x:Static services:Route.Login}}" />
+
+    <ShellContent
+        ContentTemplate="{DataTemplate pages:ChatPage}"
+        Route="{utils:Route Value={x:Static services:Route.Chat}}" />
+
+</Shell>

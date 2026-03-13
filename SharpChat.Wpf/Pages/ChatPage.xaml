@@ -1,0 +1,39 @@
+﻿<Page x:Class="SharpChat.Wpf.Pages.ChatPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SharpChat.Wpf.Pages"
+      xmlns:vm="clr-namespace:SharpChat.Core.ViewModels;assembly=SharpChat.Core"
+      xmlns:model="clr-namespace:SharpChat.Core.Models;assembly=SharpChat.Core"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      d:Background="White"
+      d:DataContext="{d:DesignInstance Type=vm:ChatViewModel, IsDesignTimeCreatable=False}">
+
+    <Grid>
+
+        <ItemsControl ItemsSource="{Binding Messages}" Width="250">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type model:Message}">
+                    <StackPanel Margin="0,0,0,10">
+                        <!-- Sender.Username -->
+                        <TextBlock Text="{Binding Sender.Username}" 
+                                   FontWeight="Bold" 
+                                   Foreground="Blue" />
+
+                        <!-- Message Text -->
+                        <TextBlock Text="{Binding Text}" 
+                                   TextWrapping="Wrap" />
+
+                        <!-- Optional: Time -->
+                        <TextBlock Text="{Binding Time, StringFormat='{}{0:HH:mm}'}" 
+                                   FontSize="10" 
+                                   Foreground="Gray" />
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+    </Grid>
+</Page>

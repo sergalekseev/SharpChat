@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:SharpChat.Core.Models;assembly=SharpChat.Core"
+             xmlns:vm="clr-namespace:SharpChat.Core.ViewModels;assembly=SharpChat.Core"
+             x:Class="SharpChat.Maui.Pages.ChatPage"
+             x:DataType="vm:ChatViewModel">
+
+    <Grid>
+        
+        <CollectionView ItemsSource="{Binding Messages}" 
+                    WidthRequest="250"
+                    HorizontalOptions="Center">
+            <CollectionView.ItemTemplate>
+                
+                <DataTemplate x:DataType="model:Message">
+                    <VerticalStackLayout Margin="0,0,0,10">
+
+                        <Label Text="{Binding Sender.Username}" 
+                           FontAttributes="Bold" 
+                           TextColor="Blue" />
+
+                        <Label Text="{Binding Text}" 
+                           LineBreakMode="WordWrap" />
+
+                        <Label Text="{Binding Time, StringFormat='{0:HH:mm}'}" 
+                           FontSize="10" 
+                           TextColor="Gray" />
+
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+
+</ContentPage>
