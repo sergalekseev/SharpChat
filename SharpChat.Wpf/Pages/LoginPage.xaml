@@ -11,9 +11,20 @@
       d:DataContext="{d:DesignInstance Type=vm:LoginViewModel, IsDesignTimeCreatable=False}">
 
     <Grid Width="250"
-          RowDefinitions="Auto, Auto, Auto, Auto, *"
-          ColumnDefinitions="2*, 5*"
           Margin="16, 8">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
 
         <TextBlock Grid.ColumnSpan="2"
                    Text="Sign In"
