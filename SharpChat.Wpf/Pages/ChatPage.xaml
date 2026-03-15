@@ -7,33 +7,57 @@
       xmlns:vm="clr-namespace:SharpChat.Core.ViewModels;assembly=SharpChat.Core"
       xmlns:model="clr-namespace:SharpChat.Core.Models;assembly=SharpChat.Core"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      Height="450" Width="600"
       d:Background="White"
       d:DataContext="{d:DesignInstance Type=vm:ChatViewModel, IsDesignTimeCreatable=False}">
 
-    <Grid>
+    <Grid Margin="24, 16">
 
-        <ItemsControl ItemsSource="{Binding Messages}" Width="250">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ItemsControl ItemsSource="{Binding Messages}" Width="250"
+                      Grid.ColumnSpan="3">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type model:Message}">
                     <StackPanel Margin="0,0,0,10">
-                        <!-- Sender.Username -->
+ 
                         <TextBlock Text="{Binding Sender.Username}" 
                                    FontWeight="Bold" 
                                    Foreground="Blue" />
 
-                        <!-- Message Text -->
                         <TextBlock Text="{Binding Text}" 
                                    TextWrapping="Wrap" />
 
-                        <!-- Optional: Time -->
                         <TextBlock Text="{Binding Time, StringFormat='{}{0:HH:mm}'}" 
                                    FontSize="10" 
                                    Foreground="Gray" />
+
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+
+        <TextBox Grid.Row="1"
+                 Text="{Binding CurrentMessageText, Mode=TwoWay}"/>
+
+        <Button Content="Submit"
+                Grid.Row="1"
+                Grid.Column="1"
+                Command="{Binding SubmitCommand}"/>
+
+        <Button Content="Cleanup"
+                Grid.Row="1"
+                Grid.Column="2"
+                Command="{Binding CleanupCommand}"/>
         
     </Grid>
 </Page>

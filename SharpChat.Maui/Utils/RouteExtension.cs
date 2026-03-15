@@ -1,6 +1,6 @@
 ﻿using SharpChat.Core.Services;
 
-namespace SharpChat.Maui.Utilities;
+namespace SharpChat.Maui.Utils;
 
 [ContentProperty(nameof(Value))]
 public class RouteExtension : IMarkupExtension

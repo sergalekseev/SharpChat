@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:SharpChat.Core.ViewModels;assembly=SharpChat.Core"
              x:Class="SharpChat.Maui.Pages.LoginPage"
              x:DataType="vm:LoginViewModel">
-    
+
     <Grid WidthRequest="300"
           RowDefinitions="Auto, Auto, Auto, Auto, *"
           ColumnDefinitions="2*, 5*"
@@ -13,30 +13,38 @@
           RowSpacing="12">
 
         <Label Grid.ColumnSpan="2"
-           Text="Sign In"
-           HorizontalTextAlignment="Center"
-           FontSize="24"/>
+               Text="Sign In"
+               HorizontalTextAlignment="Center"
+               FontSize="24"/>
 
         <Label Grid.Row="1"
-           Text="User Name: " 
-           VerticalOptions="Center" />
+               Text="User Name: " 
+               VerticalOptions="Center" />
 
         <Entry Grid.Row="1"
-           Grid.Column="1"
-           Text="{Binding Username}"/>
+               Grid.Column="1"
+               Text="{Binding Username}"/>
 
         <Label Grid.Row="2"
-           Text="Password: " 
-           VerticalOptions="Center" />
+               Text="Password: " 
+               VerticalOptions="Center" />
 
         <Entry Grid.Row="2"
-           Grid.Column="1" 
-           IsPassword="True"
-           Text="{Binding Password}"/>
+               Grid.Column="1" 
+               IsPassword="True"
+               Text="{Binding Password}"/>
 
         <Button Grid.Row="3"
-            Grid.ColumnSpan="2"
-            Text="Sign In"
-            Command="{Binding LoginCommand}"/>
+                Grid.ColumnSpan="2"
+                Text="Sign In"
+                Command="{Binding LoginCommand}"/>
+
+        <Label Grid.Row="4"
+               Grid.ColumnSpan="2"
+               Text="Login/Password are not correct, try again..."
+               TextColor="Red"
+               IsVisible="{Binding IsErrorMessageVisible}"/>
+
     </Grid>
+
 </ContentPage>

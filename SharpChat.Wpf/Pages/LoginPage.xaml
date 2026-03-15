@@ -5,13 +5,17 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:SharpChat.Wpf.Pages"
       xmlns:vm="clr-namespace:SharpChat.Core.ViewModels;assembly=SharpChat.Core"
+      xmlns:converters="clr-namespace:SharpChat.Wpf.Converters"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="200" d:DesignWidth="300"
       d:Background="White"
       d:DataContext="{d:DesignInstance Type=vm:LoginViewModel, IsDesignTimeCreatable=False}">
 
-    <Grid Width="250"
-          Margin="16, 8">
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Page.Resources>
+    
+    <Grid Width="250" Margin="24, 16">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -39,6 +43,7 @@
         <TextBox Grid.Row="1"
                  Grid.Column="1"
                  Text="{Binding Username}"
+                 d:Text="TestUser"
                  Margin="0, 4"/>
 
         <TextBlock Grid.Row="2"
@@ -48,6 +53,7 @@
         <PasswordBox Grid.Row="2"
                      Grid.Column="1" 
                      Margin="0, 4"
+                     d:Password="TestPassword"
                      PasswordChanged="PasswordBox_PasswordChanged"/>
 
         <Button Grid.Row="3"
@@ -55,5 +61,14 @@
                 Content="Sign In"
                 Margin="0, 8"
                 Command="{Binding LoginCommand}"/>
+
+        <TextBlock Grid.Row="4"
+                   Grid.ColumnSpan="5"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Center"
+                   Foreground="Red"
+                   Visibility="{Binding IsErrorMessageVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   Text="Login/password are not correct, try again..." />
+
     </Grid>
 </Page>

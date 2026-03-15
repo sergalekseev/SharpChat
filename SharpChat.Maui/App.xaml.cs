@@ -1,28 +1,11 @@
-﻿using SharpChat.Core.Services;
+﻿
+namespace SharpChat.Maui;
 
-namespace SharpChat.Maui
+public partial class App : Application
 {
-    public partial class App : Application
+    public App()
     {
-        private readonly IStartupCoordinator _startupCoordinator;
-
-        public App(IStartupCoordinator startupCoordinator)
-        {
-            InitializeComponent();
-            _startupCoordinator = startupCoordinator;
-        }
-
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            return new Window(new AppShell());
-        }
-
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            _startupCoordinator.StartAsync();
-        }
-
+        InitializeComponent();
+        MainPage = new AppShell();
     }
 }

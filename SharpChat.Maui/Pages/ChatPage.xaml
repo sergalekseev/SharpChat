@@ -1,36 +1,52 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:model="clr-namespace:SharpChat.Core.Models;assembly=SharpChat.Core"
              xmlns:vm="clr-namespace:SharpChat.Core.ViewModels;assembly=SharpChat.Core"
+             xmlns:model="clr-namespace:SharpChat.Core.Models;assembly=SharpChat.Core"
              x:Class="SharpChat.Maui.Pages.ChatPage"
              x:DataType="vm:ChatViewModel">
+    <Grid RowDefinitions="*, Auto" 
+          ColumnDefinitions="5*, *, *"
+          RowSpacing="4"
+          ColumnSpacing="8"
+          Padding="24, 16">
 
-    <Grid>
-        
         <CollectionView ItemsSource="{Binding Messages}" 
-                    WidthRequest="250"
-                    HorizontalOptions="Center">
+                        WidthRequest="250"
+                        HorizontalOptions="Center">
             <CollectionView.ItemTemplate>
-                
+
                 <DataTemplate x:DataType="model:Message">
                     <VerticalStackLayout Margin="0,0,0,10">
 
                         <Label Text="{Binding Sender.Username}" 
-                           FontAttributes="Bold" 
-                           TextColor="Blue" />
+                               FontAttributes="Bold" 
+                               TextColor="Blue" />
 
                         <Label Text="{Binding Text}" 
-                           LineBreakMode="WordWrap" />
+                               LineBreakMode="WordWrap" />
 
                         <Label Text="{Binding Time, StringFormat='{0:HH:mm}'}" 
-                           FontSize="10" 
-                           TextColor="Gray" />
+                               FontSize="10" 
+                               TextColor="Gray" />
 
                     </VerticalStackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </Grid>
 
+        <Entry Grid.Row="1"
+               Text="{Binding CurrentMessageText, Mode=TwoWay}"/>
+
+        <Button Text="Submit"
+                Grid.Row="1"
+                Grid.Column="1"
+                Command="{Binding SubmitCommand}"/>
+
+        <Button Text="Cleanup"
+                Grid.Row="1"
+                Grid.Column="2"
+                Command="{Binding CleanupCommand}"/>
+
+    </Grid>
 </ContentPage>

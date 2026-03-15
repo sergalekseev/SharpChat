@@ -1,16 +1,15 @@
 ﻿using SharpChat.Core.Services;
 
-namespace SharpChat.Maui.Services
+namespace SharpChat.Maui.Services;
+
+internal class NavigationService : INavigationService
 {
-    internal class NavigationService : INavigationService
+    public async Task NavigateToAsync(Route route)
     {
-        public async Task NavigateToAsync(Route route)
-        {
-            await Shell.Current.GoToAsync($"//{route.ToRouteString()}");
-        }
-        public async Task GoBackAsync()
-        {
-            await Shell.Current.GoToAsync("..");
-        }
+        await Shell.Current.GoToAsync($"//{route.ToRouteString()}");
+    }
+    public async Task GoBackAsync()
+    {
+        await Shell.Current.GoToAsync("..");
     }
 }

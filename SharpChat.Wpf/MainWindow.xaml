@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpChat.Wpf" xmlns:views="clr-namespace:SharpChat.Wpf.Pages"
         mc:Ignorable="d"
-        Title="SharpChat" Height="450" Width="800">
+        Title="SharpChat" 
+        SizeToContent="WidthAndHeight"
+        d:Height="200" d:Width="300">
     <Grid>
         <views:NavigationFrame x:Name="NavigationFrame" />
     </Grid>

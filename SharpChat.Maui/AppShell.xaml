@@ -3,10 +3,10 @@
     x:Class="SharpChat.Maui.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:sf="clr-namespace:Syncfusion.Maui.Toolkit.SegmentedControl;assembly=Syncfusion.Maui.Toolkit"
-    xmlns:pages="clr-namespace:SharpChat.Maui.Pages"
+    xmlns:local="clr-namespace:SharpChat.Maui"
+    xmlns:utils="clr-namespace:SharpChat.Maui.Utils"
     xmlns:services="clr-namespace:SharpChat.Core.Services;assembly=SharpChat.Core"
-    xmlns:utils="clr-namespace:SharpChat.Maui.Utilities"
+    xmlns:pages="clr-namespace:SharpChat.Maui.Pages"
     Shell.FlyoutBehavior="Disabled"
     Title="SharpChat">
 
@@ -17,5 +17,6 @@
     <ShellContent
         ContentTemplate="{DataTemplate pages:ChatPage}"
         Route="{utils:Route Value={x:Static services:Route.Chat}}" />
+
 
 </Shell>
