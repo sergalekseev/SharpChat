@@ -47,7 +47,7 @@
         </ItemsControl>
 
         <TextBox Grid.Row="1"
-                 Text="{Binding CurrentMessageText, Mode=TwoWay}"/>
+                 Text="{Binding CurrentMessageText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <Button Content="Submit"
                 Grid.Row="1"

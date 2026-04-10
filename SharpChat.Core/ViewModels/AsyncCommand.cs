@@ -1,40 +1,39 @@
 ﻿using System.Windows.Input;
 
-namespace SharpChat.Core.ViewModels
+namespace SharpChat.Core.ViewModels;
+
+public class AsyncCommand : ICommand
 {
-    public class AsyncCommand : ICommand
+    public event EventHandler? CanExecuteChanged;
+
+    private readonly Func<Task> _execute;
+    private readonly Func<bool>? _canExecute;
+
+    public AsyncCommand(Func<Task> execute, Func<bool>? canExecute = null)
     {
-        public event EventHandler? CanExecuteChanged;
+        _execute = execute;
+        _canExecute = canExecute;
+    }
 
-        private readonly Func<Task> _execute;
-        private readonly Func<bool>? _canExecute;
+    public bool CanExecute(object? parameter)
+    {
+        return _canExecute?.Invoke() ?? true;
+    }
 
-        public AsyncCommand(Func<Task> execute, Func<bool>? canExecute = null)
+    public async void Execute(object? parameter)
+    {
+        try
         {
-            _execute = execute;
-            _canExecute = canExecute;
+            await _execute();
         }
-
-        public bool CanExecute(object? parameter)
+        catch (Exception ex)
         {
-            return _canExecute?.Invoke() ?? true;
+            Console.WriteLine($"Command execution failed with exception: {ex.GetType().Name}, message: {ex.Message}");
         }
+    }
 
-        public async void Execute(object? parameter)
-        {
-            try
-            {
-                await _execute();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Command execution failed with exception: {ex.GetType().Name}, message: {ex.Message}");
-            }
-        }
-
-        public void RaiseCanExecuteChanged()
-        {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
+    public void RaiseCanExecuteChanged()
+    {
+        CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

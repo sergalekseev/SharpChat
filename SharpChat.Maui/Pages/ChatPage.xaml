@@ -5,13 +5,25 @@
              xmlns:model="clr-namespace:SharpChat.Core.Models;assembly=SharpChat.Core"
              x:Class="SharpChat.Maui.Pages.ChatPage"
              x:DataType="vm:ChatViewModel">
-    <Grid RowDefinitions="*, Auto" 
+
+    <Grid RowDefinitions="Auto, *, Auto" 
           ColumnDefinitions="5*, *, *"
           RowSpacing="4"
           ColumnSpacing="8"
           Padding="24, 16">
 
-        <CollectionView ItemsSource="{Binding Messages}" 
+        <Label Text="{Binding СhatParticipant.Username}"
+               FontAttributes="Bold"
+               FontSize="16"/>
+
+        <Entry Grid.Column="1"
+               Grid.ColumnSpan="2"
+               IsEnabled="{Binding IsSearchEnabled}"
+               Text="{Binding SearchText, Mode=TwoWay}"/>
+
+        <CollectionView Grid.Row="1"
+                        Grid.ColumnSpan="3"
+                        ItemsSource="{Binding FilteredMessages}" 
                         WidthRequest="250"
                         HorizontalOptions="Center">
             <CollectionView.ItemTemplate>
@@ -35,16 +47,16 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Entry Grid.Row="1"
+        <Entry Grid.Row="2"
                Text="{Binding CurrentMessageText, Mode=TwoWay}"/>
 
         <Button Text="Submit"
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="1"
                 Command="{Binding SubmitCommand}"/>
 
         <Button Text="Cleanup"
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="2"
                 Command="{Binding CleanupCommand}"/>
 

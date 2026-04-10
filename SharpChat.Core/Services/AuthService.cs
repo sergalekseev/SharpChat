@@ -1,10 +1,9 @@
-﻿namespace SharpChat.Core.Services
+﻿namespace SharpChat.Core.Services;
+
+public class AuthService : IAuthService
 {
-    public class AuthService : IAuthService
+    public Task<bool> LoginAsync(string username, string password)
     {
-        public Task<bool> LoginAsync(string username, string password)
-        {
-            return Task.FromResult(username == "Test" && password == "Test");
-        }
+        return Task.FromResult(username == "Test" && password == "Test");
     }
 }

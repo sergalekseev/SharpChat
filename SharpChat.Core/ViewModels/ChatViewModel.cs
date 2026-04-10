@@ -1,13 +1,14 @@
 ﻿using SharpChat.Core.Models;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace SharpChat.Core.ViewModels;
 
 public class ChatViewModel : BaseViewModel
 {
-    public ObservableCollection<Message> Messages { get; }
+    private readonly ObservableCollection<Message> _messages;
     private string _currentMessageText = string.Empty;
+    private string _searchText = string.Empty;
+
     private User _currentUser;
 
     public ChatViewModel()
@@ -17,29 +18,52 @@ public class ChatViewModel : BaseViewModel
             Username = "User1"
         };
 
-        var user2 = new User()
+        СhatParticipant = new User()
         {
             Username = "User2"
         };
 
-        Messages = new()
+        _messages = new()
         {
             new() { Sender = _currentUser, Text = "Hello" },
-            new() { Sender = user2, Text = "World" },
+            new() { Sender = СhatParticipant, Text = "World" },
         };
+        FilteredMessages = new(_messages);
 
-        SubmitCommand = new AsyncCommand(SubmitClicked);
-        CleanupCommand = new AsyncCommand(CleanupClicked);
+        _messages.CollectionChanged += MessagesCollectionChanged;
+
+        SubmitCommand = new AsyncCommand(SubmitClicked, CheckSubmitCanExecute);
+        CleanupCommand = new AsyncCommand(CleanupClicked, CheckCleanupCanExecute);
     }
+
+    public ObservableCollection<Message> FilteredMessages { get; }
+
+    public User СhatParticipant { get; }
+
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            SetProperty(ref _searchText, value);
+            FilterMessages();
+        }
+    }
+
+    public bool IsSearchEnabled => _messages.Count > 0;
 
     public string CurrentMessageText
     {
         get => _currentMessageText;
-        set => SetProperty(ref _currentMessageText, value);
+        set
+        {
+            SetProperty(ref _currentMessageText, value);
+            SubmitCommand.RaiseCanExecuteChanged();
+        }
     }
 
-    public ICommand SubmitCommand { get; }
-    public ICommand CleanupCommand { get; }
+    public AsyncCommand SubmitCommand { get; }
+    public AsyncCommand CleanupCommand { get; }
 
     private Task SubmitClicked()
     {
@@ -48,7 +72,7 @@ public class ChatViewModel : BaseViewModel
             return Task.CompletedTask;
         }
 
-        Messages.Add(new()
+        _messages.Add(new()
         {
             Sender = _currentUser,
             Text = _currentMessageText,
@@ -56,13 +80,81 @@ public class ChatViewModel : BaseViewModel
         });
 
         CurrentMessageText = string.Empty;
+        CleanupCommand.RaiseCanExecuteChanged();
 
         return Task.CompletedTask;
     }
 
+    private bool CheckSubmitCanExecute()
+    {
+        return !string.IsNullOrWhiteSpace(CurrentMessageText);
+    }
+
     private Task CleanupClicked()
     {
-        Messages.Clear();
+        _messages.Clear();
+        CleanupCommand.RaiseCanExecuteChanged();
+
         return Task.CompletedTask;
+    }
+
+    private bool CheckCleanupCanExecute()
+    {
+        return _messages.Count > 0;
+    }
+
+    private void MessagesCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action is System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+        {
+            FilteredMessages.Clear();
+        }
+        else
+        {
+            FilterMessages();
+        }
+
+        RaisePropertyChangedEvent(nameof(IsSearchEnabled));
+    }
+
+    private void FilterMessages()
+    {
+        var isSearchTextNotValuable = string.IsNullOrWhiteSpace(SearchText);
+
+        var targetList = _messages.Where(message =>
+            isSearchTextNotValuable || message.Text.Contains(SearchText)).ToList();
+
+        for (var i = FilteredMessages.Count - 1; i >= 0; i--)
+        {
+            if (isSearchTextNotValuable)
+            {
+                break;
+            }
+
+            var item = FilteredMessages[i];
+            if (!targetList.Contains(item))
+            {
+                FilteredMessages.RemoveAt(i);
+            }
+        }
+
+        for (var i = 0; i < targetList.Count; i++)
+        {
+            var targetItem = targetList[i];
+
+            if (i >= FilteredMessages.Count || FilteredMessages[i] != targetItem)
+            {
+                var oldIndex = FilteredMessages.IndexOf(targetItem);
+
+                if (oldIndex >= 0)
+                {
+                    FilteredMessages.Move(oldIndex, i);
+                }
+                else
+                {
+                    FilteredMessages.Insert(i, targetItem);
+                }
+            }
+        }
     }
 }

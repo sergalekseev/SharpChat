@@ -16,7 +16,7 @@ public class LoginViewModel : BaseViewModel
         _navigationService = navigationService;
         _authService = authService;
 
-        LoginCommand = new AsyncCommand(LoginAsync);
+        LoginCommand = new AsyncCommand(LoginAsync, CheckLoginCanExecute);
     }
 
     public string Username
@@ -26,6 +26,7 @@ public class LoginViewModel : BaseViewModel
         {
             SetProperty(ref _username, value);
             IsErrorMessageVisible = false;
+            LoginCommand.RaiseCanExecuteChanged();
         }
     }
 
@@ -36,6 +37,7 @@ public class LoginViewModel : BaseViewModel
         {
             SetProperty(ref _password, value);
             IsErrorMessageVisible = false;
+            LoginCommand.RaiseCanExecuteChanged();
         }
     }
 
@@ -57,5 +59,10 @@ public class LoginViewModel : BaseViewModel
         }
 
         IsErrorMessageVisible = !success;
+    }
+
+    private bool CheckLoginCanExecute()
+    {
+        return !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
     }
 }
