@@ -1,7 +1,7 @@
-﻿namespace SharpChat.Core.Models
+﻿namespace SharpChat.Core.Models;
+
+public class User
 {
-    public class User
-    {
-        public string Username { get; set; } = string.Empty;
-    }
+    public string Username { get; set; } = string.Empty;
 }
+

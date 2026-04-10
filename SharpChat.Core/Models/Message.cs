@@ -1,9 +1,11 @@
-﻿namespace SharpChat.Core.Models
+﻿namespace SharpChat.Core.Models;
+
+public class Message
 {
-    public class Message
-    {
-        public User Sender { get; set; }
-        public string Text { get; set; }
-        public DateTime Time { get; set; }
-    }
+    public int Id { get; set; }
+    public int ChatId { get; set; }
+    public User Sender { get; set; }
+    public string Text { get; set; }
+    public DateTime Time { get; set; }
 }
+
