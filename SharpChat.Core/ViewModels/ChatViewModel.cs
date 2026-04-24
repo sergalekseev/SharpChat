@@ -1,10 +1,13 @@
 ﻿using SharpChat.Core.Models;
+using SharpChat.Core.Services.ApiClients;
 using System.Collections.ObjectModel;
 
 namespace SharpChat.Core.ViewModels;
 
 public class ChatViewModel : BaseViewModel
 {
+    IChatsApiClient _chatsApiClient;
+
     private readonly ObservableCollection<Message> _messages;
     private string _currentMessageText = string.Empty;
     private string _searchText = string.Empty;
@@ -12,8 +15,10 @@ public class ChatViewModel : BaseViewModel
 
     private User _currentUser;
 
-    public ChatViewModel()
+    public ChatViewModel(IChatsApiClient chatsApiClient)
     {
+        _chatsApiClient = chatsApiClient;
+
         _currentUser = new User()
         {
             Username = "User1"
@@ -32,12 +37,7 @@ public class ChatViewModel : BaseViewModel
 
         FilteredMessages = new(_messages);
 
-        ChatsList = new ObservableCollection<Chat>()
-        {
-            new Chat(){ Title = "Anna", LastMessage = new Message() { Text = "Hello" }  },
-            new Chat(){ Title = "Alex", LastMessage = new Message() { Text = "Hi" }  },
-            new Chat(){ Title = "Sergei", LastMessage = new Message() { Text = "How are you?" }  },
-        };
+        ChatsList = new ObservableCollection<Chat>();
 
         _messages.CollectionChanged += MessagesCollectionChanged;
 
@@ -47,7 +47,7 @@ public class ChatViewModel : BaseViewModel
 
     public ObservableCollection<Message> FilteredMessages { get; }
 
-    public ObservableCollection<Chat> ChatsList { get; }
+    public ObservableCollection<Chat> ChatsList { get; private set; }
 
     public Chat SelectedChat
     {
@@ -80,6 +80,14 @@ public class ChatViewModel : BaseViewModel
     public AsyncCommand SubmitCommand { get; }
     public AsyncCommand CleanupCommand { get; }
 
+    public override async Task OnAppearing()
+    {
+        await base.OnAppearing();
+
+        var chats = await _chatsApiClient.GetAllAsync();
+        ChatsList = new ObservableCollection<Chat>(chats);
+        RaisePropertyChangedEvent(nameof(ChatsList));
+    }
     private Task SubmitClicked()
     {
         if (string.IsNullOrWhiteSpace(_currentMessageText))

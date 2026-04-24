@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SharpChat.Core.Services;
+using SharpChat.Core.Services.ApiClients;
 using SharpChat.Core.ViewModels;
 using SharpChat.Maui.Pages;
 using SharpChat.Maui.Services;
@@ -35,6 +36,11 @@ public static class MauiProgram
         // pages
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<ChatPage>();
+
+        builder.Services.AddHttpClient<IChatsApiClient, ChatsApiClient>(client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5153/");
+        });
 
         return builder.Build();
     }

@@ -3,9 +3,19 @@ using System.Runtime.CompilerServices;
 
 namespace SharpChat.Core.ViewModels;
 
-public class BaseViewModel : INotifyPropertyChanged
+public abstract class BaseViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    public virtual Task OnAppearing()
+    {
+        return Task.CompletedTask;
+    }
+
+    public virtual Task OnDisappearing()
+    {
+        return Task.CompletedTask;
+    }
 
     protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
     {
