@@ -2,9 +2,10 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
+  <Project Path="SharpChat.Core/SharpChat.Core.csproj" />
   <Project Path="SharpChat.Maui/SharpChat.Maui.csproj" Id="9acab2ef-4266-4f88-9e99-1acbae97faf7">
     <Deploy Solution="Debug|*" />
   </Project>
+  <Project Path="SharpChat.Server/SharpChat.Server.csproj" Id="1f954e5a-a50b-4870-a534-3a8aee1296a9" />
   <Project Path="SharpChat.Wpf/SharpChat.Wpf.csproj" />
-  <Project Path="SharpChat.Core/SharpChat.Core.csproj" />
 </Solution>

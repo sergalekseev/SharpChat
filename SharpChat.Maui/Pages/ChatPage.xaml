@@ -7,25 +7,52 @@
              x:DataType="vm:ChatViewModel">
 
     <Grid RowDefinitions="Auto, *, Auto" 
-          ColumnDefinitions="5*, *, *"
+          ColumnDefinitions="150, 5*, *, *"
           RowSpacing="4"
           ColumnSpacing="8"
           Padding="24, 16">
 
-        <Label Text="{Binding СhatParticipant.Username}"
+        <CollectionView Grid.RowSpan="3"
+                        ItemsSource="{Binding ChatsList}"
+                        HorizontalOptions="Fill"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedChat}">
+            
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate x:DataType="model:Chat">
+                    <VerticalStackLayout Margin="0,0,0,10">
+
+                        <Label Text="{Binding Title}" 
+                               FontAttributes="Bold" 
+                               TextColor="Black" />
+
+                        <Label Text="{Binding LastMessage.Text}" 
+                               TextColor="Gray"
+                               LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Label Grid.Column="1"
+               Text="{Binding SelectedChat.Title}"
                FontAttributes="Bold"
                FontSize="16"/>
 
-        <Entry Grid.Column="1"
+        <Entry Grid.Column="2"
                Grid.ColumnSpan="2"
                IsEnabled="{Binding IsSearchEnabled}"
                Text="{Binding SearchText, Mode=TwoWay}"/>
 
         <CollectionView Grid.Row="1"
+                        Grid.Column="1"
                         Grid.ColumnSpan="3"
                         ItemsSource="{Binding FilteredMessages}" 
                         WidthRequest="250"
-                        HorizontalOptions="Center">
+                        HorizontalOptions="Center"
+                        SelectionMode="Single">
             <CollectionView.ItemTemplate>
 
                 <DataTemplate x:DataType="model:Message">
@@ -48,16 +75,17 @@
         </CollectionView>
 
         <Entry Grid.Row="2"
+               Grid.Column="1"
                Text="{Binding CurrentMessageText, Mode=TwoWay}"/>
 
         <Button Text="Submit"
                 Grid.Row="2"
-                Grid.Column="1"
+                Grid.Column="2"
                 Command="{Binding SubmitCommand}"/>
 
         <Button Text="Cleanup"
                 Grid.Row="2"
-                Grid.Column="2"
+                Grid.Column="3"
                 Command="{Binding CleanupCommand}"/>
 
     </Grid>

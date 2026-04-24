@@ -8,6 +8,7 @@ public class ChatViewModel : BaseViewModel
     private readonly ObservableCollection<Message> _messages;
     private string _currentMessageText = string.Empty;
     private string _searchText = string.Empty;
+    private Chat _selectedChat;
 
     private User _currentUser;
 
@@ -18,7 +19,7 @@ public class ChatViewModel : BaseViewModel
             Username = "User1"
         };
 
-        СhatParticipant = new User()
+        var chatParticipant = new User()
         {
             Username = "User2"
         };
@@ -26,9 +27,17 @@ public class ChatViewModel : BaseViewModel
         _messages = new()
         {
             new() { Sender = _currentUser, Text = "Hello" },
-            new() { Sender = СhatParticipant, Text = "World" },
+            new() { Sender = chatParticipant, Text = "World" },
         };
+
         FilteredMessages = new(_messages);
+
+        ChatsList = new ObservableCollection<Chat>()
+        {
+            new Chat(){ Title = "Anna", LastMessage = new Message() { Text = "Hello" }  },
+            new Chat(){ Title = "Alex", LastMessage = new Message() { Text = "Hi" }  },
+            new Chat(){ Title = "Sergei", LastMessage = new Message() { Text = "How are you?" }  },
+        };
 
         _messages.CollectionChanged += MessagesCollectionChanged;
 
@@ -38,7 +47,13 @@ public class ChatViewModel : BaseViewModel
 
     public ObservableCollection<Message> FilteredMessages { get; }
 
-    public User СhatParticipant { get; }
+    public ObservableCollection<Chat> ChatsList { get; }
+
+    public Chat SelectedChat
+    {
+        get => _selectedChat;
+        set => SetProperty(ref _selectedChat, value);
+    }
 
     public string SearchText
     {

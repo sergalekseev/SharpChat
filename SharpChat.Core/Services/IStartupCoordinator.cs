@@ -1,7 +1,6 @@
-﻿namespace SharpChat.Core.Services
+﻿namespace SharpChat.Core.Services;
+
+public interface IStartupCoordinator
 {
-    public interface IStartupCoordinator
-    {
-        Task StartAsync();
-    }
+    Task StartAsync();
 }
