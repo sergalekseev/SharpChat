@@ -1,18 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.5.11605.296
+VisualStudioVersion = 18.6.11709.129 insiders
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Wpf", "SharpChat.Wpf\SharpChat.Wpf.csproj", "{B208B781-9891-7FDB-44A2-8460204BCAA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Core", "SharpChat.Core\SharpChat.Core.csproj", "{343EB6EC-BE68-D3AE-A92F-788C8D0C26A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Core", "SharpChat.Core\SharpChat.Core.csproj", "{04A3EE03-C0D3-66E6-6C8C-F99309221321}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Maui", "SharpChat.Maui\SharpChat.Maui.csproj", "{9ACAB2EF-4266-4F88-9E99-1ACBAE97FAF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Wpf", "SharpChat.Wpf\SharpChat.Wpf.csproj", "{B208B781-9891-7FDB-44A2-8460204BCAA8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{089100B1-113F-4E66-888A-E83F3999EAFD}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Maui", "SharpChat.Maui\SharpChat.Maui.csproj", "{F39C1DD0-312E-6D3C-D6A5-0424F7552257}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChat.Server", "SharpChat.Server\SharpChat.Server.csproj", "{1F954E5A-A50B-4870-A534-3A8AEE1296A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,22 +22,28 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{343EB6EC-BE68-D3AE-A92F-788C8D0C26A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{343EB6EC-BE68-D3AE-A92F-788C8D0C26A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{343EB6EC-BE68-D3AE-A92F-788C8D0C26A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{343EB6EC-BE68-D3AE-A92F-788C8D0C26A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ACAB2EF-4266-4F88-9E99-1ACBAE97FAF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ACAB2EF-4266-4F88-9E99-1ACBAE97FAF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ACAB2EF-4266-4F88-9E99-1ACBAE97FAF7}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{9ACAB2EF-4266-4F88-9E99-1ACBAE97FAF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ACAB2EF-4266-4F88-9E99-1ACBAE97FAF7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B208B781-9891-7FDB-44A2-8460204BCAA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B208B781-9891-7FDB-44A2-8460204BCAA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B208B781-9891-7FDB-44A2-8460204BCAA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B208B781-9891-7FDB-44A2-8460204BCAA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04A3EE03-C0D3-66E6-6C8C-F99309221321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04A3EE03-C0D3-66E6-6C8C-F99309221321}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04A3EE03-C0D3-66E6-6C8C-F99309221321}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04A3EE03-C0D3-66E6-6C8C-F99309221321}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F39C1DD0-312E-6D3C-D6A5-0424F7552257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F39C1DD0-312E-6D3C-D6A5-0424F7552257}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F39C1DD0-312E-6D3C-D6A5-0424F7552257}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{F39C1DD0-312E-6D3C-D6A5-0424F7552257}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F39C1DD0-312E-6D3C-D6A5-0424F7552257}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F39C1DD0-312E-6D3C-D6A5-0424F7552257}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{1F954E5A-A50B-4870-A534-3A8AEE1296A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F954E5A-A50B-4870-A534-3A8AEE1296A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F954E5A-A50B-4870-A534-3A8AEE1296A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F954E5A-A50B-4870-A534-3A8AEE1296A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {739BE67E-8594-4BB8-B14F-206363599803}
 	EndGlobalSection
 EndGlobal
