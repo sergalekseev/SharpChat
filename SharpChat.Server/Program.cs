@@ -1,4 +1,6 @@
 
+using SharpChat.Server.Services;
+
 namespace SharpChat.Server
 {
     public class Program
@@ -8,6 +10,7 @@ namespace SharpChat.Server
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddSingleton<IChatsManager, ChatsInMemoryManager>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

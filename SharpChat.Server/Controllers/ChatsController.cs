@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SharpChat.Core.DataContracts;
 using SharpChat.Core.Models;
+using SharpChat.Server.Services;
 
 namespace SharpChat.Server.Controllers;
 
@@ -8,28 +10,31 @@ namespace SharpChat.Server.Controllers;
 public class ChatsController : ControllerBase
 {
     private readonly ILogger<ChatsController> _logger;
-    private Chat[] _chats =
-        [
-            new Chat(){ Id = 0, Title = "Anna", LastMessage = new Message() { Text = "Hello" }  },
-            new Chat(){ Id = 1, Title = "Alex", LastMessage = new Message() { Text = "Hi" }  },
-            new Chat(){ Id = 2, Title = "Sergei", LastMessage = new Message() { Text = "How are you?" }  },
-        ];
+    private readonly IChatsManager _chatsManager;
 
-    public ChatsController(ILogger<ChatsController> logger)
+    public ChatsController(ILogger<ChatsController> logger, IChatsManager chatsManager)
     {
         _logger = logger;
+        _chatsManager = chatsManager;
     }
 
     [HttpGet("list")]
     public ActionResult<IEnumerable<Chat>> GetAll()
     {
-        return _chats;
+        var list = _chatsManager.GetAll();
+
+        if (list is null)
+        {
+            throw new InvalidDataException("Data repository is not exists");
+        }
+
+        return Ok(list);
     }
 
     [HttpGet("{chatId}")]
     public ActionResult<Chat> GetById(int chatId)
     {
-        var chat = _chats.FirstOrDefault(c => c.Id == chatId);
+        var chat = _chatsManager.GetById(chatId);
 
         if (chat is null)
         {
@@ -39,5 +44,52 @@ public class ChatsController : ControllerBase
         return chat;
     }
 
+    [HttpPost]
+    public ActionResult<Chat> CreateChat(ChatCreateDto newChat)
+    {
+        try
+        {
+            var createdChat = _chatsManager.CreateChat(newChat);
+
+            if (createdChat is null)
+            {
+                throw new InvalidOperationException("New chat was not created");
+            }
+
+            return Ok(createdChat);
+        }
+        catch (InvalidDataException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Problem(ex.Message);
+        }
+    }
+
+    [HttpPut]
+    public ActionResult<Chat> UpdateChat(ChatUpdateDto chatToUpdate)
+    {
+        try
+        {
+            var updatedChat = _chatsManager.UpdateChat(chatToUpdate);
+
+            if (updatedChat is null)
+            {
+                throw new InvalidOperationException("Chat after update is not exist");
+            }
+
+            return Ok(updatedChat);
+        }
+        catch (InvalidDataException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Problem(ex.Message);
+        }
+    }
 }
 

@@ -12,7 +12,7 @@
         public async Task StartAsync()
         {
             // assume always needs to login
-            await _navigationService.NavigateToAsync(Route.Login);
+            await _navigationService.NavigateToAsync(Route.Chat);
         }
     }
 }
