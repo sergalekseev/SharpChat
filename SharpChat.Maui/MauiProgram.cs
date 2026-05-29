@@ -37,9 +37,17 @@ public static class MauiProgram
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<ChatPage>();
 
+        // api clients
+        var serverAddress = new Uri("http://localhost:5153/");
+
         builder.Services.AddHttpClient<IChatsApiClient, ChatsApiClient>(client =>
         {
-            client.BaseAddress = new Uri("http://localhost:5153/");
+            client.BaseAddress = serverAddress;
+        });
+
+        builder.Services.AddHttpClient<IMessagesApiClient, MessagesApiClient>(client =>
+        {
+            client.BaseAddress = serverAddress;
         });
 
         return builder.Build();

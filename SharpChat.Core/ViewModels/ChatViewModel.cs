@@ -7,36 +7,27 @@ namespace SharpChat.Core.ViewModels;
 public class ChatViewModel : BaseViewModel
 {
     IChatsApiClient _chatsApiClient;
+    IMessagesApiClient _messagesApiClient;
 
-    private readonly ObservableCollection<Message> _messages;
+    private ObservableCollection<Message> _messages;
     private string _currentMessageText = string.Empty;
     private string _searchText = string.Empty;
     private Chat _selectedChat;
 
     private User _currentUser;
 
-    public ChatViewModel(IChatsApiClient chatsApiClient)
+    public ChatViewModel(IChatsApiClient chatsApiClient, IMessagesApiClient messagesApiClient)
     {
         _chatsApiClient = chatsApiClient;
+        _messagesApiClient = messagesApiClient;
 
         _currentUser = new User()
         {
-            Username = "User1"
+            Username = "Me"
         };
 
-        var chatParticipant = new User()
-        {
-            Username = "User2"
-        };
-
-        _messages = new()
-        {
-            new() { Sender = _currentUser, Text = "Hello" },
-            new() { Sender = chatParticipant, Text = "World" },
-        };
-
-        FilteredMessages = new(_messages);
-
+        _messages = new ObservableCollection<Message>();
+        FilteredMessages = new ObservableCollection<Message>();
         ChatsList = new ObservableCollection<Chat>();
 
         _messages.CollectionChanged += MessagesCollectionChanged;
@@ -45,14 +36,19 @@ public class ChatViewModel : BaseViewModel
         CleanupCommand = new AsyncCommand(CleanupClicked, CheckCleanupCanExecute);
     }
 
-    public ObservableCollection<Message> FilteredMessages { get; }
+    public ObservableCollection<Message> FilteredMessages { get; private set; }
 
     public ObservableCollection<Chat> ChatsList { get; private set; }
 
     public Chat SelectedChat
     {
         get => _selectedChat;
-        set => SetProperty(ref _selectedChat, value);
+        set
+        {
+            var isChanged = SetProperty(ref _selectedChat, value);
+            if (!isChanged) return;
+            _ = LoadMessagesAsync(_selectedChat, CancellationToken.None);
+        }
     }
 
     public string SearchText
@@ -85,9 +81,23 @@ public class ChatViewModel : BaseViewModel
         await base.OnAppearing();
 
         var chats = await _chatsApiClient.GetAllAsync();
+
+        // TODO: switch on MainThread
         ChatsList = new ObservableCollection<Chat>(chats);
         RaisePropertyChangedEvent(nameof(ChatsList));
     }
+
+    private async Task LoadMessagesAsync(Chat chat, CancellationToken cancellationToken)
+    {
+        var messages = await _messagesApiClient.GetAllAsync(chat.Id);
+
+        // TODO: switch on MainThread
+        _messages = new ObservableCollection<Message>(messages ?? []);
+        FilteredMessages = new(messages ?? []);
+        RaisePropertyChangedEvent(nameof(FilteredMessages));
+        RaisePropertyChangedEvent(nameof(IsSearchEnabled));
+    }
+
     private Task SubmitClicked()
     {
         if (string.IsNullOrWhiteSpace(_currentMessageText))

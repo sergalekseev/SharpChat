@@ -5,12 +5,14 @@ namespace SharpChat.Server.Services;
 
 public class ChatsInMemoryManager : IChatsManager
 {
-    private readonly List<Chat> _chats =
-        [
-            new Chat(){ Id = 0, Title = "Anna", LastMessage = new Message() { Text = "Hello" }  },
-            new Chat(){ Id = 1, Title = "Alex", LastMessage = new Message() { Text = "Hi" }  },
-            new Chat(){ Id = 2, Title = "Sergei", LastMessage = new Message() { Text = "How are you?" }  },
-        ];
+    private readonly IMessagesManager _messagesManager;
+
+    public ChatsInMemoryManager(IMessagesManager messagesManager)
+    {
+        _messagesManager = messagesManager;
+    }
+
+    private readonly List<Chat> _chats = MockedDataGenerator.Chats.ToList();
 
     public Chat? CreateChat(ChatCreateDto newChat)
     {
@@ -39,12 +41,26 @@ public class ChatsInMemoryManager : IChatsManager
 
     public IEnumerable<Chat> GetAll()
     {
-        return _chats;
+        return _chats.Select(chat => new Chat()
+        {
+            Id = chat.Id,
+            Title = chat.Title,
+            LastMessage = _messagesManager.GetLast(chat.Id)
+        });
     }
 
     public Chat? GetById(int chatId)
     {
-        return _chats.FirstOrDefault(chat => chat.Id == chatId);
+        var originalChat = _chats.FirstOrDefault(chat => chat.Id == chatId);
+
+        if (originalChat == null) return null;
+
+        return new Chat()
+        {
+            Id = originalChat.Id,
+            Title = originalChat.Title,
+            LastMessage = _messagesManager.GetLast(originalChat.Id)
+        };
     }
 
     public Chat? UpdateChat(ChatUpdateDto chatUpdateDto)
