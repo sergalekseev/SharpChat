@@ -18,5 +18,4 @@
         ContentTemplate="{DataTemplate pages:ChatPage}"
         Route="{utils:Route Value={x:Static services:Route.Chat}}" />
 
-
 </Shell>

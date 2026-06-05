@@ -1,7 +1,11 @@
-﻿namespace SharpChat.Core.Services
+﻿namespace SharpChat.Core.Services;
+
+public interface IAuthService
 {
-    public interface IAuthService
-    {
-        Task<bool> LoginAsync(string username, string password);
-    }
+    string AuthToken { get; }
+
+    Task<bool> LoginAsync(string username, string password, CancellationToken cancellationToken);
+    Task<bool> TryAutoLoginAsync();
+    Task LogoutAsync();
 }
+

@@ -1,4 +1,5 @@
-﻿using SharpChat.Core.Services;
+﻿using Microsoft.Maui.ApplicationModel;
+using SharpChat.Core.Services;
 
 namespace SharpChat.Core.ViewModels;
 
@@ -51,11 +52,15 @@ public class LoginViewModel : BaseViewModel
 
     private async Task LoginAsync()
     {
-        var success = await _authService.LoginAsync(Username, Password);
+        var success = await _authService.LoginAsync(Username, Password, CancellationToken.None);
 
         if (success)
         {
-            await _navigationService.NavigateToAsync(Route.Chat);
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                Username = Password = string.Empty;
+                await _navigationService.NavigateToAsync(Route.Chat);
+            });
         }
 
         IsErrorMessageVisible = !success;

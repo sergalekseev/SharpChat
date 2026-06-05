@@ -39,16 +39,22 @@ public static class MauiProgram
 
         // api clients
         var serverAddress = new Uri("http://localhost:5153/");
+        builder.Services.AddTransient<AuthDelegatingHandler>();
+
+        builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
+        {
+            client.BaseAddress = serverAddress;
+        });
 
         builder.Services.AddHttpClient<IChatsApiClient, ChatsApiClient>(client =>
         {
             client.BaseAddress = serverAddress;
-        });
+        }).AddHttpMessageHandler<AuthDelegatingHandler>();
 
         builder.Services.AddHttpClient<IMessagesApiClient, MessagesApiClient>(client =>
         {
             client.BaseAddress = serverAddress;
-        });
+        }).AddHttpMessageHandler<AuthDelegatingHandler>();
 
         return builder.Build();
     }

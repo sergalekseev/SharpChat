@@ -7,9 +7,9 @@ public static class MockedDataGenerator
 
     public static readonly List<Chat> Chats =
         [
-            new Chat(){ Id = 0, Title = "Anna" },
-            new Chat(){ Id = 1, Title = "Alex" },
-            new Chat(){ Id = 2, Title = "Sergei" },
+            new Chat(){ Id = 0, Title = "Test1" },
+            new Chat(){ Id = 1, Title = "Test2" },
+            new Chat(){ Id = 2, Title = "Test3" },
         ];
 
     public static List<Message>? GenerateMessagesForChat(Chat chat)

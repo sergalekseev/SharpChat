@@ -98,24 +98,26 @@ public class ChatViewModel : BaseViewModel
         RaisePropertyChangedEvent(nameof(IsSearchEnabled));
     }
 
-    private Task SubmitClicked()
+    private async Task SubmitClicked()
     {
         if (string.IsNullOrWhiteSpace(_currentMessageText))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        _messages.Add(new()
+        var message = await _messagesApiClient.SendMessage(new DataContracts.MessageCreateDto()
         {
-            Sender = _currentUser,
+            ChatId = _selectedChat.Id,
             Text = _currentMessageText,
-            Time = DateTime.Now
         });
+
+        if (message != null)
+        {
+            _messages.Add(message);
+        }
 
         CurrentMessageText = string.Empty;
         CleanupCommand.RaiseCanExecuteChanged();
-
-        return Task.CompletedTask;
     }
 
     private bool CheckSubmitCanExecute()

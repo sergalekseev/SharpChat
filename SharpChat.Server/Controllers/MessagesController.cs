@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SharpChat.Core.DataContracts;
 using SharpChat.Core.Models;
 using SharpChat.Server.Services;
 
 namespace SharpChat.Server.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")] // "api/messages"
 public class MessagesController : ControllerBase
@@ -21,5 +24,29 @@ public class MessagesController : ControllerBase
     public ActionResult<IEnumerable<Chat>?> GetAll(int chatId)
     {
         return Ok(_messagesManager.GetAll(chatId) ?? []);
+    }
+
+    [HttpPost]
+    public ActionResult<Chat> CreateMessage(MessageCreateDto newMessage)
+    {
+        try
+        {
+            var createdMessage = _messagesManager.CreateMessage(User, newMessage);
+
+            if (createdMessage is null)
+            {
+                throw new InvalidOperationException("New message was not created");
+            }
+
+            return Ok(createdMessage);
+        }
+        catch (InvalidDataException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Problem(ex.Message);
+        }
     }
 }

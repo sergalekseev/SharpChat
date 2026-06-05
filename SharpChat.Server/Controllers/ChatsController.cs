@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SharpChat.Core.DataContracts;
 using SharpChat.Core.Models;
 using SharpChat.Server.Services;
 
 namespace SharpChat.Server.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")] // "api/chats"
 public class ChatsController : ControllerBase
