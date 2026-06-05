@@ -1,4 +1,5 @@
 ﻿using SharpChat.Core.Models;
+using SharpChat.Core.Services;
 using SharpChat.Core.Services.ApiClients;
 using System.Collections.ObjectModel;
 
@@ -8,6 +9,7 @@ public class ChatViewModel : BaseViewModel
 {
     IChatsApiClient _chatsApiClient;
     IMessagesApiClient _messagesApiClient;
+    IMainThread _mainThread;
 
     private ObservableCollection<Message> _messages;
     private string _currentMessageText = string.Empty;
@@ -16,10 +18,11 @@ public class ChatViewModel : BaseViewModel
 
     private User _currentUser;
 
-    public ChatViewModel(IChatsApiClient chatsApiClient, IMessagesApiClient messagesApiClient)
+    public ChatViewModel(IChatsApiClient chatsApiClient, IMessagesApiClient messagesApiClient, IMainThread mainThread)
     {
         _chatsApiClient = chatsApiClient;
         _messagesApiClient = messagesApiClient;
+        _mainThread = mainThread;
 
         _currentUser = new User()
         {
@@ -82,20 +85,26 @@ public class ChatViewModel : BaseViewModel
 
         var chats = await _chatsApiClient.GetAllAsync();
 
-        // TODO: switch on MainThread
-        ChatsList = new ObservableCollection<Chat>(chats);
-        RaisePropertyChangedEvent(nameof(ChatsList));
+        _mainThread.BeginInvokeOnMainThreadAsync(() =>
+        {
+            ChatsList = new ObservableCollection<Chat>(chats);
+            RaisePropertyChangedEvent(nameof(ChatsList));
+        });
     }
 
     private async Task LoadMessagesAsync(Chat chat, CancellationToken cancellationToken)
     {
         var messages = await _messagesApiClient.GetAllAsync(chat.Id);
 
-        // TODO: switch on MainThread
-        _messages = new ObservableCollection<Message>(messages ?? []);
-        FilteredMessages = new(messages ?? []);
-        RaisePropertyChangedEvent(nameof(FilteredMessages));
-        RaisePropertyChangedEvent(nameof(IsSearchEnabled));
+        _mainThread.BeginInvokeOnMainThreadAsync(() =>
+        {
+            _messages.CollectionChanged -= MessagesCollectionChanged;
+            _messages = new ObservableCollection<Message>(messages ?? []);
+            _messages.CollectionChanged += MessagesCollectionChanged;
+            FilteredMessages = new(messages ?? []);
+            RaisePropertyChangedEvent(nameof(FilteredMessages));
+            RaisePropertyChangedEvent(nameof(IsSearchEnabled));
+        });
     }
 
     private async Task SubmitClicked()
@@ -113,7 +122,10 @@ public class ChatViewModel : BaseViewModel
 
         if (message != null)
         {
-            _messages.Add(message);
+            _mainThread.BeginInvokeOnMainThreadAsync(() =>
+            {
+                _messages.Add(message);
+            });
         }
 
         CurrentMessageText = string.Empty;
