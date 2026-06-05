@@ -29,6 +29,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<IStartupCoordinator, StartupCoordinator>();
         builder.Services.AddSingleton<IMainThread, MainThreadService>();
+        builder.Services.AddSingleton<IChatRealtimeService, ChatRealtimeService>();
 
         // view models
         builder.Services.AddTransient<LoginViewModel>();

@@ -1,5 +1,6 @@
 ﻿using SharpChat.Core.DataContracts;
 using SharpChat.Core.Models;
+using System.Security.Claims;
 
 namespace SharpChat.Server.Services;
 
@@ -80,5 +81,13 @@ public class ChatsInMemoryManager : IChatsManager
         chatToUpdate.Title = chatUpdateDto.Title;
 
         return _chats.FirstOrDefault(chat => chat.Id == chatUpdateDto.Id);
+    }
+
+    public IEnumerable<Chat> GetUserChats(ClaimsPrincipal claims)
+    {
+        var userId = int.Parse(claims.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        // for now, chat id == user id 
+        return _chats.Where(c => c.Id == userId);
     }
 }

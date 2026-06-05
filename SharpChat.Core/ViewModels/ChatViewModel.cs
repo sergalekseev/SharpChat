@@ -10,6 +10,7 @@ public class ChatViewModel : BaseViewModel
     IChatsApiClient _chatsApiClient;
     IMessagesApiClient _messagesApiClient;
     IMainThread _mainThread;
+    IChatRealtimeService _chatRealtimeService;
 
     private ObservableCollection<Message> _messages;
     private string _currentMessageText = string.Empty;
@@ -18,11 +19,12 @@ public class ChatViewModel : BaseViewModel
 
     private User _currentUser;
 
-    public ChatViewModel(IChatsApiClient chatsApiClient, IMessagesApiClient messagesApiClient, IMainThread mainThread)
+    public ChatViewModel(IChatsApiClient chatsApiClient, IMessagesApiClient messagesApiClient, IMainThread mainThread, IChatRealtimeService chatRealtimeService)
     {
         _chatsApiClient = chatsApiClient;
         _messagesApiClient = messagesApiClient;
         _mainThread = mainThread;
+        _chatRealtimeService = chatRealtimeService;
 
         _currentUser = new User()
         {
@@ -34,9 +36,15 @@ public class ChatViewModel : BaseViewModel
         ChatsList = new ObservableCollection<Chat>();
 
         _messages.CollectionChanged += MessagesCollectionChanged;
+        _chatRealtimeService.OnMessageReceived += OnNewMessageReceived;
 
         SubmitCommand = new AsyncCommand(SubmitClicked, CheckSubmitCanExecute);
         CleanupCommand = new AsyncCommand(CleanupClicked, CheckCleanupCanExecute);
+    }
+
+    private void OnNewMessageReceived(Message newMessage)
+    {
+        _messages.Add(newMessage);
     }
 
     public ObservableCollection<Message> FilteredMessages { get; private set; }
@@ -83,6 +91,7 @@ public class ChatViewModel : BaseViewModel
     {
         await base.OnAppearing();
 
+        await _chatRealtimeService.ConnectAsync();
         var chats = await _chatsApiClient.GetAllAsync();
 
         _mainThread.BeginInvokeOnMainThreadAsync(() =>
@@ -120,13 +129,13 @@ public class ChatViewModel : BaseViewModel
             Text = _currentMessageText,
         });
 
-        if (message != null)
-        {
-            _mainThread.BeginInvokeOnMainThreadAsync(() =>
-            {
-                _messages.Add(message);
-            });
-        }
+        //if (message != null)
+        //{
+        //    _mainThread.BeginInvokeOnMainThreadAsync(() =>
+        //    {
+        //        _messages.Add(message);
+        //    });
+        //}
 
         CurrentMessageText = string.Empty;
         CleanupCommand.RaiseCanExecuteChanged();

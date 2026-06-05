@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using SharpChat.Core.DataContracts;
 using SharpChat.Core.Models;
+using SharpChat.Core.Services;
 using SharpChat.Server.Services;
 
 namespace SharpChat.Server.Controllers;
@@ -13,11 +15,13 @@ public class MessagesController : ControllerBase
 {
     private readonly ILogger<ChatsController> _logger;
     private readonly IMessagesManager _messagesManager;
+    private readonly IHubContext<ChatNotificationsHub, IChatNotificationsClient> _chatNotificationsHub;
 
-    public MessagesController(ILogger<ChatsController> logger, IMessagesManager messagesManager)
+    public MessagesController(ILogger<ChatsController> logger, IMessagesManager messagesManager, IHubContext<ChatNotificationsHub, IChatNotificationsClient> chatNotificationsHub)
     {
         _logger = logger;
         _messagesManager = messagesManager;
+        _chatNotificationsHub = chatNotificationsHub;
     }
 
     [HttpGet("list/{chatId}")] //messages/list/{chatId}
@@ -27,7 +31,7 @@ public class MessagesController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<Chat> CreateMessage(MessageCreateDto newMessage)
+    public async Task<ActionResult<Chat>> CreateMessage(MessageCreateDto newMessage)
     {
         try
         {
@@ -38,6 +42,7 @@ public class MessagesController : ControllerBase
                 throw new InvalidOperationException("New message was not created");
             }
 
+            await _chatNotificationsHub.Clients.Group($"chat_{createdMessage.ChatId}").ReceiveNewMessage(createdMessage);
             return Ok(createdMessage);
         }
         catch (InvalidDataException ex)
