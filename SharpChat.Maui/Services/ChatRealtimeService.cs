@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using SharpChat.Core;
 using SharpChat.Core.Models;
 using SharpChat.Core.Services;
 
@@ -8,6 +7,12 @@ namespace SharpChat.Maui.Services;
 public class ChatRealtimeService : IChatRealtimeService
 {
     private HubConnection _connection;
+    private readonly IAuthService _authService;
+
+    public ChatRealtimeService(IAuthService authService)
+    {
+        _authService = authService;
+    }
 
     public event Action<Message>? OnMessageReceived;
 
@@ -20,8 +25,7 @@ public class ChatRealtimeService : IChatRealtimeService
         _connection = new HubConnectionBuilder()
             .WithUrl("http://localhost:5153/chatnotifications", options =>
             {
-                options.AccessTokenProvider = async () =>
-                    await SecureStorage.GetAsync(Consts.StorageAccessTokenKey);
+                options.AccessTokenProvider = () => Task.FromResult(_authService.AuthToken ?? null);
             })
             .WithAutomaticReconnect()
             .Build();
