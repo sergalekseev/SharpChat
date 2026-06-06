@@ -2,7 +2,7 @@
 
 namespace SharpChat.Core.Services;
 
-public interface IChatRealtimeService
+public interface IChatRealtimeService : IChatNotificationsClient
 {
     Task ConnectAsync();
     Task DisconnectAsync();

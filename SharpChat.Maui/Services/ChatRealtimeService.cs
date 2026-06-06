@@ -33,10 +33,7 @@ public class ChatRealtimeService : IChatRealtimeService
 
     private void RegisterHandlers()
     {
-        _connection.On<Message>("ReceiveNewMessage", message =>
-        {
-            OnMessageReceived?.Invoke(message);
-        });
+        _connection.On<Message>(nameof(ReceiveNewMessage), ReceiveNewMessage);
     }
 
     public async Task DisconnectAsync()
@@ -47,5 +44,11 @@ public class ChatRealtimeService : IChatRealtimeService
             await _connection.DisposeAsync();
             _connection = null;
         }
+    }
+
+    public Task ReceiveNewMessage(Message message)
+    {
+        OnMessageReceived?.Invoke(message);
+        return Task.CompletedTask;
     }
 }
