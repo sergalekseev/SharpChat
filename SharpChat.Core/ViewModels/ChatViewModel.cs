@@ -12,7 +12,8 @@ public class ChatViewModel : BaseViewModel
     IMainThread _mainThread;
     IChatRealtimeService _chatRealtimeService;
 
-    private ObservableCollection<Message> _messages;
+    private Dictionary<int, ObservableCollection<Message>> _messagesCache = new Dictionary<int, ObservableCollection<Message>>();
+
     private string _currentMessageText = string.Empty;
     private string _searchText = string.Empty;
     private Chat _selectedChat;
@@ -31,11 +32,9 @@ public class ChatViewModel : BaseViewModel
             Username = "Me"
         };
 
-        _messages = new ObservableCollection<Message>();
         FilteredMessages = new ObservableCollection<Message>();
         ChatsList = new ObservableCollection<Chat>();
 
-        _messages.CollectionChanged += MessagesCollectionChanged;
         _chatRealtimeService.OnMessageReceived += OnNewMessageReceived;
 
         SubmitCommand = new AsyncCommand(SubmitClicked, CheckSubmitCanExecute);
@@ -44,7 +43,33 @@ public class ChatViewModel : BaseViewModel
 
     private void OnNewMessageReceived(Message newMessage)
     {
-        _messages.Add(newMessage);
+        _messagesCache.TryGetValue(newMessage.ChatId, out var messages);
+
+        if (messages == null)
+        {
+            messages = new ObservableCollection<Message>();
+            _messagesCache.Add(newMessage.ChatId, messages);
+        }
+
+        messages.Add(newMessage);
+    }
+
+    private ObservableCollection<Message>? CurrentChatMessages
+    {
+        get
+        {
+            if (SelectedChat == null)
+            {
+                return null;
+            }
+
+            if (_messagesCache.ContainsKey(SelectedChat.Id))
+            {
+                return _messagesCache[SelectedChat.Id];
+            }
+
+            return null;
+        }
     }
 
     public ObservableCollection<Message> FilteredMessages { get; private set; }
@@ -58,7 +83,16 @@ public class ChatViewModel : BaseViewModel
         {
             var isChanged = SetProperty(ref _selectedChat, value);
             if (!isChanged) return;
-            _ = LoadMessagesAsync(_selectedChat, CancellationToken.None);
+
+            var messages = CurrentChatMessages;
+            if (messages == null)
+            {
+                _ = LoadMessagesAsync(_selectedChat, CancellationToken.None);
+            }
+            else
+            {
+                UpdateMessagesView();
+            }
         }
     }
 
@@ -72,7 +106,7 @@ public class ChatViewModel : BaseViewModel
         }
     }
 
-    public bool IsSearchEnabled => _messages.Count > 0;
+    public bool IsSearchEnabled => CurrentChatMessages?.Count > 0;
 
     public string CurrentMessageText
     {
@@ -103,14 +137,28 @@ public class ChatViewModel : BaseViewModel
 
     private async Task LoadMessagesAsync(Chat chat, CancellationToken cancellationToken)
     {
-        var messages = await _messagesApiClient.GetAllAsync(chat.Id);
+        var currentMessages = CurrentChatMessages;
+        if (currentMessages != null) return;
 
+        var messages = await _messagesApiClient.GetAllAsync(chat.Id);
+        currentMessages = new ObservableCollection<Message>(messages ?? []);
+        _messagesCache.Add(chat.Id, currentMessages);
+        UpdateMessagesView();
+    }
+
+    private void UpdateMessagesView()
+    {
         _mainThread.BeginInvokeOnMainThreadAsync(() =>
         {
-            _messages.CollectionChanged -= MessagesCollectionChanged;
-            _messages = new ObservableCollection<Message>(messages ?? []);
-            _messages.CollectionChanged += MessagesCollectionChanged;
-            FilteredMessages = new(messages ?? []);
+            var currentMessages = CurrentChatMessages;
+
+            if (currentMessages == null) return;
+
+
+            currentMessages.CollectionChanged -= MessagesCollectionChanged;
+            currentMessages.CollectionChanged += MessagesCollectionChanged;
+
+            FilteredMessages = new(currentMessages ?? []);
             RaisePropertyChangedEvent(nameof(FilteredMessages));
             RaisePropertyChangedEvent(nameof(IsSearchEnabled));
         });
@@ -148,7 +196,7 @@ public class ChatViewModel : BaseViewModel
 
     private Task CleanupClicked()
     {
-        _messages.Clear();
+        CurrentChatMessages?.Clear();
         CleanupCommand.RaiseCanExecuteChanged();
 
         return Task.CompletedTask;
@@ -156,7 +204,7 @@ public class ChatViewModel : BaseViewModel
 
     private bool CheckCleanupCanExecute()
     {
-        return _messages.Count > 0;
+        return CurrentChatMessages?.Count > 0;
     }
 
     private void MessagesCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -177,7 +225,7 @@ public class ChatViewModel : BaseViewModel
     {
         var isSearchTextNotValuable = string.IsNullOrWhiteSpace(SearchText);
 
-        var targetList = _messages.Where(message =>
+        var targetList = CurrentChatMessages?.Where(message =>
             isSearchTextNotValuable || message.Text.Contains(SearchText)).ToList();
 
         for (var i = FilteredMessages.Count - 1; i >= 0; i--)
@@ -188,13 +236,13 @@ public class ChatViewModel : BaseViewModel
             }
 
             var item = FilteredMessages[i];
-            if (!targetList.Contains(item))
+            if (targetList?.Contains(item) == false)
             {
                 FilteredMessages.RemoveAt(i);
             }
         }
 
-        for (var i = 0; i < targetList.Count; i++)
+        for (var i = 0; i < targetList?.Count; i++)
         {
             var targetItem = targetList[i];
 
